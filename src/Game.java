@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner; // Importerar Scanner-klassen för att läsa användarens inmatning från terminalen
 
 public class Game {
@@ -26,9 +27,23 @@ public class Game {
             board.displayBoard();   // Visar aktuellt spelbräde
             System.out.println("Player " + currentPlayer.getSymbol() + ", enter your move (row[1-3] and column[1-3]): ");
 
-            // Tar emot spelarens drag (rad och kolumn), justerar för att matcha array-index (börjar från 0)
-            int row = scanner.nextInt() - 1;
-            int col = scanner.nextInt() - 1;
+            int row = -1;
+            int col = -1;
+            boolean validInput = false;
+
+            // Hantering av felaktig inmatning
+            while (!validInput) {
+                try {
+                    System.out.print("Ange radnummer (1-3): ");
+                    row = scanner.nextInt() - 1;  // Ettan subtraheras för att anpassa spelarens inmatning till array-index
+                    System.out.print("Ange kolumnnummer (1-3): ");
+                    col = scanner.nextInt() - 1;
+                    validInput = true; // Om vi når hit utan undantag, är inmatningen giltig
+                } catch (InputMismatchException e) {
+                    System.out.println("Felaktig inmatning, vänligen ange giltiga heltal. Försök igen.");
+                    scanner.nextLine();  // Rensar bufferten efter felaktig inmatning
+                }
+            }
 
             // Kontrollerar om spelarens drag är giltigt
             if (board.isValidMove(row, col)) {
